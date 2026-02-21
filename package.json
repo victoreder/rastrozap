@@ -2,6 +2,7 @@
   "name": "rastrozap-monorepo",
   "version": "0.1.0",
   "description": "WhatsApp lead tracking platform for traffic managers",
+  "packageManager": "npm@9.0.0",
   "private": true,
   "workspaces": [
     "apps/frontend",

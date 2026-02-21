@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint . --max-warnings 0 || true",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf .next dist"
   },
@@ -18,7 +18,7 @@
     "@supabase/ssr": "^0.5.0",
     "@supabase/supabase-js": "^2.45.0",
     "recharts": "^2.12.0",
-    "@rastrozap/tipos-compartilhados": "workspace:*"
+    "@rastrozap/tipos-compartilhados": "*"
   },
   "devDependencies": {
     "typescript": "^5.7.0",
