@@ -1,48 +1,47 @@
-import { NextRequest } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
-import { LoginRequest, AuthResponse } from '../../types';
-import { errorResponse, successResponse } from '@/lib/auth-middleware';
+import { createClient } from '@supabase/supabase-js';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    const body: LoginRequest = await request.json();
+    const { email, password } = await request.json();
 
-    // Validation
-    if (!body.email || !body.password) {
-      return errorResponse('Missing required fields: email, password', 400);
+    if (!email || !password) {
+      return NextResponse.json(
+        { error: 'Email e senha são obrigatórios' },
+        { status: 400 }
+      );
     }
 
-    const supabase = await createClient();
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
 
-    // Sign in user
     const { data, error } = await supabase.auth.signInWithPassword({
-      email: body.email,
-      password: body.password,
+      email,
+      password,
     });
 
-    if (error || !data.user || !data.session) {
-      return errorResponse('Invalid email or password', 401);
+    if (error) {
+      return NextResponse.json(
+        { error: error.message || 'Email ou senha incorretos' },
+        { status: 401 }
+      );
     }
 
-    const response: AuthResponse = {
-      user: {
-        id: data.user.id,
-        email: data.user.email || '',
-        name: data.user.user_metadata?.name,
-        created_at: data.user.created_at,
+    return NextResponse.json(
+      {
+        success: true,
+        user: data.user,
+        session: data.session,
       },
-      session: {
-        access_token: data.session.access_token,
-        refresh_token: data.session.refresh_token,
-        expires_at: data.session.expires_at || Date.now() + 3600000,
-        expires_in: data.session.expires_in || 3600,
-      },
-    };
-
-    return successResponse(response, 200);
+      { status: 200 }
+    );
   } catch (error) {
-    console.error('Login error:', error);
-    const message = error instanceof Error ? error.message : 'Internal server error';
-    return errorResponse(message, 500);
+    console.error('Auth login error:', error);
+    return NextResponse.json(
+      { error: 'Erro de conexão ao fazer login' },
+      { status: 500 }
+    );
   }
 }
