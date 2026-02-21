@@ -29,11 +29,13 @@ describe('RegisterForm', () => {
     const emailInput = screen.getByPlaceholderText('Email');
     const passwordInput = screen.getByPlaceholderText('Senha');
     const confirmInput = screen.getByPlaceholderText('Confirmar Senha');
+    const termsCheckbox = screen.getByRole('checkbox');
     const submitButton = screen.getByRole('button', { name: /criar conta/i });
 
     fireEvent.change(emailInput, { target: { value: 'test@example.com' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
     fireEvent.change(confirmInput, { target: { value: 'different' } });
+    fireEvent.click(termsCheckbox); // Check terms first
     fireEvent.click(submitButton);
 
     expect(screen.getByText('Senhas não correspondem')).toBeInTheDocument();

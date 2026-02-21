@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { AuthProvider } from '@/lib/auth-context';
 
 export const metadata: Metadata = {
   title: 'RastroZap',
@@ -14,7 +15,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className="bg-gray-50">{children}</body>
+      <body className="bg-gray-50">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

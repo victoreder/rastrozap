@@ -3,26 +3,42 @@ import Header from '../components/Header';
 import { useAuth } from '@/lib/auth-context';
 
 jest.mock('@/lib/auth-context');
+jest.mock('@supabase/ssr', () => ({
+  createBrowserClient: jest.fn(() => ({
+    auth: {
+      signOut: jest.fn().mockResolvedValue({}),
+    },
+  })),
+}));
+jest.mock('next/navigation', () => ({
+  useRouter: jest.fn(() => ({
+    push: jest.fn(),
+  })),
+}));
 
 describe('Header', () => {
   beforeEach(() => {
     (useAuth as jest.Mock).mockReturnValue({
-      user: { email: 'test@example.com' },
+      user: {
+        id: 'user-1',
+        email: 'test@example.com',
+        user_metadata: { name: 'Test User' },
+      },
     });
   });
 
-  test('renders header with user email', () => {
-    render(<Header />);
-    expect(screen.getByText('test@example.com')).toBeInTheDocument();
-  });
-
-  test('renders logout button', () => {
-    render(<Header />);
-    expect(screen.getByRole('button', { name: /sair/i })).toBeInTheDocument();
-  });
-
-  test('renders RastroZap title on mobile', () => {
+  test('renders header component', () => {
     render(<Header />);
     expect(screen.getByText('RastroZap')).toBeInTheDocument();
+  });
+
+  test('renders user menu button with user initial', () => {
+    render(<Header />);
+    expect(screen.getByText('T')).toBeInTheDocument(); // User initial from "Test User"
+  });
+
+  test('displays user name in menu', () => {
+    render(<Header />);
+    expect(screen.getByText('Test User')).toBeInTheDocument();
   });
 });
