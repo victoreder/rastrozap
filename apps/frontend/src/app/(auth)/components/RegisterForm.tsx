@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function RegisterForm() {
@@ -11,8 +11,12 @@ export default function RegisterForm() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Prevent double submit
+    if (isLoading) return;
+
     setError('');
 
     if (!terms) {
@@ -51,7 +55,7 @@ export default function RegisterForm() {
       setError('Erro de conexão');
       setIsLoading(false);
     }
-  };
+  }, [email, password, passwordConfirm, terms, isLoading, router]);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -94,7 +98,7 @@ export default function RegisterForm() {
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400"
+        className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400 transition"
       >
         {isLoading ? 'Criando...' : 'Criar Conta'}
       </button>
