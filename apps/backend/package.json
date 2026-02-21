@@ -1,0 +1,20 @@
+{
+  "name": "@rastrozap/backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'Backend development setup'",
+    "build": "echo 'Backend build setup'",
+    "lint": "echo 'Backend lint setup'",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@rastrozap/tipos-compartilhados": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/node": "^20.0.0"
+  }
+}
